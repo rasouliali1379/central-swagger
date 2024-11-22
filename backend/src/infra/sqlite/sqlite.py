@@ -32,6 +32,10 @@ class Sqlite(HealthCheck, metaclass=SingletonMeta):
             self.initialized = True
             logger.info("Sqlite client initialized successfully")
 
+    async def create_tables(self):
+        async with self.engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
     def get_session(self) -> AsyncSession:
         return self.SessionLocal()
 
@@ -50,5 +54,9 @@ class Sqlite(HealthCheck, metaclass=SingletonMeta):
         return "Sqlite"
 
 
-def get_sqlite(config: Config = Depends(get_config)) -> Sqlite:
-    return Sqlite(config.sqlite)
+async def get_sqlite(config: Config = Depends(get_config)) -> Sqlite:
+    client = Sqlite(config.sqlite)
+
+    await client.create_tables()
+
+    return client

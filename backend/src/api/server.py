@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.api.routes import health, doc
+from src.api.routes import health, collection
 from src.config.settings import Config
 
 _config = Config()
@@ -26,10 +26,11 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_origins=["*"]
 )
 
 app.include_router(health.router)
-app.include_router(doc.router, prefix="/central-swagger/doc")
+app.include_router(collection.router, prefix="/central-swagger/collections")
 
 
 @app.exception_handler(Exception)
