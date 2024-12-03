@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
+from starlette.responses import JSONResponse
 
 from src.api.middlewares.auth import authorize
 from src.models.collection import Collection
@@ -35,9 +36,24 @@ async def add_spec(
     await service.add_spec_to_collection(Spec(spec=req.spec, key=key))
 
 
-@router.get("/")
+@router.get("/all")
 async def get_collections(
         service: DocService = Depends(get_doc_service)
 ) -> GetAllCollectionResponse:
     res = await service.get_all_collections()
     return GetAllCollectionResponse.from_model(res)
+
+
+@router.get("/")
+async def get_collections_with_specs(
+        service: DocService = Depends(get_doc_service)
+) -> GetAllCollectionResponse:
+    res = await service.get_all_collections_with_specs()
+    return GetAllCollectionResponse.from_model(res)
+
+
+@router.get("/aggregated")
+async def get_aggregated_specs(
+        service: DocService = Depends(get_doc_service)
+) -> GetAllCollectionResponse:
+    return JSONResponse(content=await service.get_all_specs_aggregated())

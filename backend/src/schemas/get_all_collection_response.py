@@ -6,6 +6,7 @@ from src.models.collection import Collection
 
 
 class Item(BaseModel):
+    key: str
     name: str
     spec: dict
 
@@ -17,6 +18,7 @@ class GetAllCollectionResponse(BaseModel):
     def from_model(collections: List[Collection]) -> dict:
         items = [
             Item(
+                key=collection.key,
                 name=collection.name,
                 spec=collection.spec.spec if collection.spec else {},
             )

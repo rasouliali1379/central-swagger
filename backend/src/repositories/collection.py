@@ -52,6 +52,27 @@ class CollectionRepository(metaclass=SingletonMeta):
 
     async def get_all(self) -> List[Collection]:
         async with self._db.get_session() as session:
+
+            query = (select(CollectionEntity))
+
+            result = await session.execute(query)
+            rows = result.scalars().all()
+
+            collections = []
+            for collection_entity in rows:
+                collection = Collection(
+                    id=collection_entity.id,
+                    name=collection_entity.name,
+                    key=collection_entity.key,
+                    secret=collection_entity.secret,
+                    exposed=collection_entity.exposed,
+                )
+                collections.append(collection)
+
+            return collections
+
+    async def get_all_with_specs(self) -> List[Collection]:
+        async with self._db.get_session() as session:
             latest_spec = aliased(SpecEntity)
 
             subquery = (

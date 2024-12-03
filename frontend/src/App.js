@@ -1,13 +1,19 @@
-// src/App.js
-import React from 'react';
-import MultiSwagger from './components/MultiSwagger';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import LoginAndTable from "./pages/Login";
+import MultiSwagger from "./pages/MultiSwagger";
+import Services from "./pages/Services";
 
-function App() {
-  return (
-    <div className="App">
-      <MultiSwagger />
-    </div>
-  );
-}
+const App = () => {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<MultiSwagger />} />
+                <Route path="/admin" element={<LoginAndTable />} />
+                <Route path="/services" element={<Services />} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;
